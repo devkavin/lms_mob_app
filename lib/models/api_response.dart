@@ -1,4 +1,6 @@
 class ApiResponse {
-  Object? data;
+  Map<String, dynamic>? data;
   String? error;
+
+  ApiResponse({this.data, this.error});
 }

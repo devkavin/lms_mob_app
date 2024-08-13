@@ -21,7 +21,7 @@ Future<ApiResponse> login(String email, String password) async {
     );
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = response.body;
+        apiResponse.data = jsonDecode(response.body);
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -32,18 +32,19 @@ Future<ApiResponse> login(String email, String password) async {
             errors[errors.keys.elementAt(0)][0]; // get the first error
         break;
       default:
-        apiResponse.error = somethingWentWrong;
+        apiResponse.error = apiResponse.toString();
         break;
     }
   } catch (e) {
-    apiResponse.error = serverError;
+    apiResponse.error = e.toString();
   }
 
   return apiResponse;
 }
 
 // register
-Future<ApiResponse> register(String name, String email, String password) async {
+Future<ApiResponse> register(
+    String name, String email, String password, String role) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     final response = await http.post(
@@ -54,11 +55,12 @@ Future<ApiResponse> register(String name, String email, String password) async {
         'email': email,
         'password': password,
         'password_confirmation': password,
+        'role': role,
       },
     );
     switch (response.statusCode) {
-      case 200:
-        apiResponse.data = response.body;
+      case 201:
+        apiResponse.data = jsonDecode(response.body);
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -69,11 +71,11 @@ Future<ApiResponse> register(String name, String email, String password) async {
             errors[errors.keys.elementAt(0)][0]; // get the first error
         break;
       default:
-        apiResponse.error = somethingWentWrong;
+        apiResponse.error = response.statusCode.toString();
         break;
     }
   } catch (e) {
-    apiResponse.error = serverError;
+    apiResponse.error = e.toString();
   }
 
   return apiResponse;
@@ -84,13 +86,13 @@ Future<ApiResponse> getUserDetails() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.post(
+    final response = await http.get(
       Uri.parse(userURL),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     );
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = response.body;
+        apiResponse.data = jsonDecode(response.body);
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -101,11 +103,12 @@ Future<ApiResponse> getUserDetails() async {
             errors[errors.keys.elementAt(0)][0]; // get the first error
         break;
       default:
-        apiResponse.error = somethingWentWrong;
+        apiResponse.error =
+            response.statusCode.toString(); // to get the status code
         break;
     }
   } catch (e) {
-    apiResponse.error = serverError;
+    apiResponse.error = e.toString();
   }
 
   return apiResponse;
