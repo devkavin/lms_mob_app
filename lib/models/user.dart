@@ -1,3 +1,5 @@
+import 'course.dart';
+
 class User {
   final int id;
   final String name;
@@ -6,6 +8,7 @@ class User {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<String> role;
+  final List<Course>? createdCourses;
   final List<Course> enrolledCourses;
   final String token;
 
@@ -17,6 +20,7 @@ class User {
     required this.createdAt,
     required this.updatedAt,
     required this.role,
+    this.createdCourses,
     required this.enrolledCourses,
     required this.token,
   });
@@ -30,39 +34,13 @@ class User {
       createdAt: DateTime.parse(json['user']['created_at']),
       updatedAt: DateTime.parse(json['user']['updated_at']),
       role: List<String>.from(json['user']['role']),
+      createdCourses: (json['user']['created_courses'] as List?)
+          ?.map((course) => Course.fromJson(course))
+          .toList(),
       enrolledCourses: (json['user']['enrolled_courses'] as List)
           .map((course) => Course.fromJson(course))
           .toList(),
       token: json['token'],
-    );
-  }
-}
-
-class Course {
-  final int id;
-  final String title;
-  final String description;
-  final String category;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  Course({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Course.fromJson(Map<String, dynamic> json) {
-    return Course(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      category: json['category'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lms_mob_app/models/api_response.dart';
 import 'package:lms_mob_app/screens/course_form.dart';
 import 'package:lms_mob_app/services/user_services.dart';
 
@@ -22,6 +23,23 @@ class _HomeState extends State<Home> {
     Profile(),
   ];
 
+  String? userRole; // Store the user's role
+
+  Future<void> _getUserData() async {
+    // Fetch user data from API
+    ApiResponse response = await getUserDetails();
+    if (response.error == null) {
+      // Assuming the role is in response.data['user']['role']
+      userRole = response.data?['user']['role'][0];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,12 +58,14 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: _screens[currentIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/screens/course_form');
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: userRole == 'student'
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                context.push('/screens/course_form');
+              },
+              child: Icon(Icons.add),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         notchMargin: 8,

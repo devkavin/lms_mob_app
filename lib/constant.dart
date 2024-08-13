@@ -5,7 +5,7 @@ const loginURL = '$baseURL/v1/login';
 const registerURL = '$baseURL/v1/register';
 const logoutURL = '$baseURL/v1/logout';
 const userURL = '$baseURL/v1/user';
-const coursesURL = '$baseURL/courses';
+const courseURL = '$baseURL/courses';
 
 // errors
 const serverError = 'Server error';
@@ -34,7 +34,7 @@ TextButton kTextButton(String label, Function onPressed) {
     style: ButtonStyle(
         backgroundColor: WidgetStateColor.resolveWith((states) => Colors.blue),
         padding: WidgetStateProperty.resolveWith(
-            (states) => EdgeInsets.symmetric(vertical: 16))),
+            (states) => EdgeInsets.symmetric(vertical: 16, horizontal: 32))),
   );
 }
 

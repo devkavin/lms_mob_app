@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms_mob_app/constant.dart';
+import 'package:lms_mob_app/models/api_response.dart';
+
+import '../services/course_service.dart';
 
 class CourseForm extends StatefulWidget {
   const CourseForm({super.key});
@@ -15,6 +18,27 @@ class _CourseFormState extends State<CourseForm> {
   TextEditingController _courseDescriptionController = TextEditingController();
   TextEditingController _courseCategoryController = TextEditingController();
   bool _isLoading = false;
+
+  void _createCourse() async {
+    ApiResponse response = await createCourse(
+      _courseNameController.text,
+      _courseDescriptionController.text,
+      _courseCategoryController.text,
+    );
+
+    if (response.error == null) {
+      context.go('/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.error!),
+        ),
+      );
+      setState(() {
+        _isLoading = !_isLoading;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +124,7 @@ class _CourseFormState extends State<CourseForm> {
                         setState(() {
                           _isLoading = !_isLoading;
                         });
+                        _createCourse();
                       }
                     })),
               ],
