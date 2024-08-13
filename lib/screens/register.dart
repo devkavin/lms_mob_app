@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lms_mob_app/screens/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant.dart';
 import '../models/api_response.dart';
 import '../models/user.dart';
 import '../services/user_services.dart';
-import 'home.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
