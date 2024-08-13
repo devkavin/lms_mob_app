@@ -1,6 +1,6 @@
 # lms_mob_app
 
-A new Flutter project.
+UPLOADING SCREENSHOTS...
 
 ## Getting Started
 
