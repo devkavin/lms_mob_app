@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms_mob_app/models/api_response.dart';
 
 import '../constant.dart';
@@ -18,24 +19,38 @@ class _LoadingState extends State<Loading> {
 
   void _loadUserInfo() async {
     String token = await getToken();
+    // if (token == '') {
+    //   // push and remove until because it removes the existing screens while the condition returns false (stop user from going BACK from the login screen)
+    //   Navigator.of(context).pushAndRemoveUntil(
+    //       MaterialPageRoute(builder: (context) => Login()), (route) => false);
+    // } else {
+    //   ApiResponse response = await getUserDetails();
+    //   if (response.error == null) {
+    //     Navigator.of(context).pushAndRemoveUntil(
+    //         MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    //   } else if (response.error == unauthorized) {
+    //     Navigator.of(context).pushAndRemoveUntil(
+    //         MaterialPageRoute(builder: (context) => Login()), (route) => false);
+    //   } else {
+    //     print(response.error);
+
+    //     ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+    //       content: Text('${response.error}'),
+    //     ));
+    //   }
+    // }
     if (token == '') {
-      // push and remove until because it removes the existing screens while the condition returns false (stop user from going BACK from the login screen)
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => Login()), (route) => false);
+      context.go('/login');
     } else {
       ApiResponse response = await getUserDetails();
       if (response.error == null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+        context.go('/home');
       } else if (response.error == unauthorized) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Login()), (route) => false);
+        context.go('/login');
       } else {
-        print(response.error);
-
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-          content: Text('${response.error}'),
-        ));
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text('${response.error}')),
+        );
       }
     }
   }

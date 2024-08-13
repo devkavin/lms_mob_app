@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lms_mob_app/screens/course_form.dart';
 import 'package:lms_mob_app/services/user_services.dart';
 
 import 'course_screen.dart';
@@ -31,9 +33,7 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.logout),
             onPressed: () {
               logout().then((value) => {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => Login()),
-                        (route) => false),
+                    context.go('/login'),
                   });
             },
           )
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
       body: _screens[currentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.of(context).pushNamed('/courses');
+          context.push('/screens/course_form');
         },
         child: Icon(Icons.add),
       ),

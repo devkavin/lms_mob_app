@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms_mob_app/constant.dart';
 import 'package:lms_mob_app/models/api_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,8 +42,7 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', user.token ?? '');
     await prefs.setInt('id', user.id ?? 0);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    context.go('/home');
   }
 
   @override
@@ -83,9 +83,7 @@ class _LoginState extends State<Login> {
                     }),
               SizedBox(height: 16),
               kLoginRegisterHint('Don\'t have an account? ', 'Register', () {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => Register()),
-                    (route) => false);
+                context.go('/register');
               })
             ],
           ),
