@@ -12,7 +12,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return SizedBox(
       child: Center(
-        child: Text('Profile'),
+        child: Text('Profile loading... 🚀'),
       ),
     );
   }

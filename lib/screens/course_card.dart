@@ -15,7 +15,8 @@ class CourseCard extends StatefulWidget {
 }
 
 class _CourseCardState extends State<CourseCard> {
-  final _isLoading = ValueNotifier<bool>(false);
+  final _isLoading = ValueNotifier<bool>(
+      false); // tried to use value notifier to see how it works
   bool _isEnrolled = false;
 
   @override

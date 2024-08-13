@@ -44,7 +44,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text(
+            userRole == 'student' ? 'Student Home' : 'Instructor Home'), // can
         centerTitle: true,
         actions: [
           IconButton(
