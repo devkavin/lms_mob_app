@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lms_mob_app/constant.dart';
 import 'package:lms_mob_app/models/api_response.dart';
 import 'package:lms_mob_app/models/course.dart';
-import 'package:lms_mob_app/screens/course_card.dart';
 
 import '../services/course_service.dart';
 import '../services/user_services.dart';

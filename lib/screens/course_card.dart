@@ -15,71 +15,64 @@ class CourseCard extends StatefulWidget {
 }
 
 class _CourseCardState extends State<CourseCard> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  final _isLoading = ValueNotifier<bool>(false);
   bool _isEnrolled = false;
 
+  @override
+  void initState() {
+    _checkIfUserIsEnrolled();
+    super.initState();
+  }
+
   void _enrollUser() async {
+    _isLoading.value = true; // Update loading state before API call
     ApiResponse response = await enrollCourse(widget.course.id);
-    setState(() {
-      _isLoading = false;
-    });
+    _isLoading.value = false; // Update loading state after API call
+
     if (response.error == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Enrolled successfully'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Enrolled successfully')),
+      );
       setState(() {
         _isEnrolled = true;
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${response.error}'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${response.error}')),
+      );
     }
   }
 
   void _unEnrollUser() async {
+    _isLoading.value = true;
     ApiResponse response = await unenrollCourse(widget.course.id);
-    setState(() {
-      _isLoading = false;
-    });
+    _isLoading.value = false;
+
     if (response.error == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Unenrolled successfully'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unenrolled successfully')),
+      );
       setState(() {
         _isEnrolled = false;
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${response.error}'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${response.error}')),
+      );
     }
   }
 
   void _checkIfUserIsEnrolled() async {
     ApiResponse response = await checkIfUserIsEnrolled(widget.course.id);
     if (response.error == null) {
-      if (response.data == true) {
-        setState(() {
-          _isEnrolled = true;
-        });
-      } else {
-        setState(() {
-          _isEnrolled = false;
-        });
-      }
+      setState(() {
+        _isEnrolled = response.data ?? false; // Set default to false
+      });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${response.error}'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${response.error}')),
+      );
     }
-  }
-
-  @override
-  void initState() {
-    _checkIfUserIsEnrolled();
-    super.initState();
   }
 
   @override
@@ -93,14 +86,20 @@ class _CourseCardState extends State<CourseCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.course.title,
-                style: Theme.of(context).textTheme.displayLarge),
+            Text(
+              widget.course.title,
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
             SizedBox(height: 8.0),
-            Text(widget.course.description,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              widget.course.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             SizedBox(height: 16.0),
-            Text('Category: ${widget.course.category}',
-                style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              'Category: ${widget.course.category}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             SizedBox(height: 16.0),
             // ElevatedButton(
             //   onPressed: () {
@@ -119,21 +118,23 @@ class _CourseCardState extends State<CourseCard> {
             //   },
             //   child: Text(_isEnrolled ? 'Unenroll' : 'Enroll'),
             // ),
-            _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : kTextButton(_isEnrolled ? 'Unenroll' : 'Enroll', () {
-                    if (_isEnrolled == true) {
-                      _unEnrollUser();
-                      setState(() {
-                        _isLoading = !_isLoading;
-                      });
-                    } else {
-                      _enrollUser();
-                      setState(() {
-                        _isLoading = !_isLoading;
-                      });
-                    }
-                  }),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isLoading,
+              builder: (context, isLoading, _) {
+                return isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : kTextButton(
+                        _isEnrolled ? 'Unenroll' : 'Enroll',
+                        () {
+                          if (_isEnrolled) {
+                            _unEnrollUser();
+                          } else {
+                            _enrollUser();
+                          }
+                        },
+                      );
+              },
+            ),
           ],
         ),
       ),
